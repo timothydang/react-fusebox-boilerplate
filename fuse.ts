@@ -22,7 +22,7 @@ Sparky.task('options', () => {
       EnvPlugin({ NODE_ENV: production ? 'production' : 'development' }),
       CSSPlugin(),
       WebIndexPlugin({
-        title: 'React Code Splitting demo',
+        title: 'React Fusebox Boilerplate',
         template: 'src/index.html',
         path: '/static/',
       }),
@@ -59,7 +59,7 @@ Sparky.task('build', () => {
     .split('routes/home/**', 'home > routes/home/HomeComponent.tsx')
     // bundle the entry point without deps
     // bundle routes for lazy loading as there is not require statement in or entry point
-    .instructions(`> [app.tsx] + [routes/**/**.{ts, tsx}]`)
+    .instructions(`> [app.tsx] + [routes/**/**.{ts, tsx}]`);
 
   if (!production) {
     app.hmr().watch();
