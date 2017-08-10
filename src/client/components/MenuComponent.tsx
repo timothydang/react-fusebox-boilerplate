@@ -1,9 +1,8 @@
-import * as React from "react";
-import { Component } from 'react';
-import { Link } from "react-router-dom";
+import * as React from 'react';
+import { Link } from 'react-router-dom';
 
-export default class MenuComponent extends Component {
-  render() {
+export default class MenuComponent extends React.Component<any, any> {
+  public render() {
     return (
       <div className="header clearfix">
         <nav>
@@ -13,7 +12,6 @@ export default class MenuComponent extends Component {
             <li role="presentation"><Link to="/contact" >Contact</Link></li>
           </ul>
         </nav>
-        <h3 className="text-muted">React lazy loading</h3>
       </div>
     );
   }

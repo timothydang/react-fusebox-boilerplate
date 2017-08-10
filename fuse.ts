@@ -1,5 +1,5 @@
 import {
-  Sparky, FuseBox, UglifyJSPlugin, QuantumPlugin, WebIndexPlugin, CSSPlugin, EnvPlugin,
+  Sparky, FuseBox, UglifyJSPlugin, QuantumPlugin, WebIndexPlugin, CSSPlugin, SassPlugin, EnvPlugin, RawPlugin,
 } from 'fuse-box';
 
 import * as express from 'express';
@@ -7,12 +7,12 @@ import * as path from 'path';
 import { FuseBoxOptions } from 'fuse-box/dist/typings/core/FuseBox';
 
 let production = false;
-let options: FuseBoxOptions;
+let options: any;
 
 Sparky.task('options', () => {
   options = {
-    homeDir: 'src',
-    output: 'dist/static/$name.js',
+    homeDir: 'src/client',
+    output: 'dist/$name.js',
     hash: production,
     target: 'browser',
     sourceMaps: true,
@@ -20,11 +20,18 @@ Sparky.task('options', () => {
     cache: !production,
     plugins: [
       EnvPlugin({ NODE_ENV: production ? 'production' : 'development' }),
-      CSSPlugin(),
-      WebIndexPlugin({
-        title: 'React Fusebox Boilerplate',
-        template: 'src/index.html',
-        path: '/static/',
+      [
+        SassPlugin({
+          importer: true,
+        }),
+        CSSPlugin({
+          outFile: (file) => `./dist/css/${file}`,
+          inject: (file) => `/css/${file}`,
+        }),
+      ],
+      production && QuantumPlugin({
+        treeshake: true,
+        uglify: true,
       }),
     ],
   };
@@ -38,25 +45,26 @@ Sparky.task('build', () => {
     fuse.dev({ root: false }, (server: any) => {
       const dist = path.join(__dirname, 'dist');
       const devAppServer = server.httpServer.app;
-      devAppServer.use('/static/', express.static(path.join(dist, 'static')));
-      devAppServer.get('*', (req: any, res: any) => {
-        res.sendFile(path.join(dist, 'static/index.html'));
+      devAppServer.use('/', express.static(dist));
+      devAppServer.get('/styleguide', (req: any, res: any) => {
+        res.sendFile(path.join(dist, 'styleguide.html'));
       });
     });
   }
 
   // extract dependencies automatically
-  const vendor = fuse.bundle('vendor')
+  const vendor = fuse.bundle('js/vendor')
     .instructions(`~ **/**.{ts,tsx} +tslib`);
 
   if (!production) { vendor.hmr(); }
 
-  const app = fuse.bundle('app')
+  const app = fuse.bundle('js/app')
     // Code splitting ****************************************************************
     .splitConfig({ browser: '/static/', dest: 'bundles/' })
     .split('routes/about/**', 'about > routes/about/AboutComponent.tsx')
     .split('routes/contact/**', 'contact > routes/contact/ContactComponent.tsx')
     .split('routes/home/**', 'home > routes/home/HomeComponent.tsx')
+
     // bundle the entry point without deps
     // bundle routes for lazy loading as there is not require statement in or entry point
     .instructions(`> [app.tsx] + [routes/**/**.{ts, tsx}]`);
@@ -69,14 +77,17 @@ Sparky.task('build', () => {
 });
 
 // main task
-Sparky.task('default', ['clean', 'options', 'build'], () => {
+Sparky.task('default', ['clean', 'options', 'build', 'copy-html'], () => {
   //
 });
 
 // wipe it all
 Sparky.task('clean', () => Sparky.src('dist/*').clean('dist/'));
 
+Sparky.task('copy-html', () => Sparky.src('*.html', { base: './src/client' }).dest(`dist/`));
+
 Sparky.task('set-production-env', () => production = true);
+
 Sparky.task('dist', ['clean', 'set-production-env', 'build'], () => {
   //
 });
