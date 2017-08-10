@@ -13,7 +13,7 @@ Sparky.task('options', () => {
   options = {
     homeDir: 'src/client',
     output: 'dist/$name.js',
-    hash: production,
+    hash: false,
     target: 'browser',
     sourceMaps: true,
     experimentalFeatures: true,

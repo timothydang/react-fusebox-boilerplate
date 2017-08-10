@@ -21,6 +21,7 @@
     "@types/react-helmet": "^5.0.1",
     "@types/react-router-dom": "^4.0.7",
     "@types/rimraf": "^2.0.0",
+    "node-sass": "^4.5.3",
     "rimraf": "^2.6.1",
     "ts-node": "^3.3.0",
     "tslint": "^5.5.0",
