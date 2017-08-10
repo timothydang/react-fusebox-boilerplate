@@ -10,8 +10,9 @@ import {
   Link,
 } from 'react-router-dom';
 
-import './app.scss';
-import './styleguide.scss';
+import './styles/application.scss';
+import './styles/application-ie.scss';
+import './styles/styleguide.scss';
 
 ReactDOM.render(
   <div>

@@ -25,8 +25,8 @@ Sparky.task('options', () => {
           importer: true,
         }),
         CSSPlugin({
-          outFile: (file) => `./dist/css/${file}`,
-          inject: (file) => `/css/${file}`,
+          outFile: (file) => `./dist/${file}`,
+          inject: (file) => `/styles/${file}`,
         }),
       ],
       production && QuantumPlugin({
