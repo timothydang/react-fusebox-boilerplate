@@ -1,19 +1,20 @@
 import {
-  Sparky, FuseBox, UglifyJSPlugin, QuantumPlugin, WebIndexPlugin, CSSPlugin, SassPlugin, EnvPlugin, RawPlugin,
+  Sparky, FuseBox, UglifyJSPlugin, CopyPlugin, QuantumPlugin, WebIndexPlugin,
+  CSSPlugin, SassPlugin, EnvPlugin, RawPlugin,
 } from 'fuse-box';
 
 import * as express from 'express';
 import * as path from 'path';
 import { FuseBoxOptions } from 'fuse-box/dist/typings/core/FuseBox';
 
-let production = false;
+let production = true;
 let options: any;
 
 Sparky.task('options', () => {
   options = {
     homeDir: 'src/client',
     output: 'dist/$name.js',
-    hash: false,
+    hash: production,
     target: 'browser',
     sourceMaps: true,
     experimentalFeatures: true,
@@ -29,6 +30,11 @@ Sparky.task('options', () => {
           inject: (file) => `/styles/${file}`,
         }),
       ],
+      WebIndexPlugin({
+        title: 'App Demo',
+        template: 'src/client/index.html',
+        path: '/',
+      }),
       production && QuantumPlugin({
         treeshake: true,
         uglify: true,
@@ -84,7 +90,7 @@ Sparky.task('default', ['clean', 'options', 'build', 'copy-html'], () => {
 // wipe it all
 Sparky.task('clean', () => Sparky.src('dist/*').clean('dist/'));
 
-Sparky.task('copy-html', () => Sparky.src('*.html', { base: './src/client' }).dest(`dist/`));
+Sparky.task('copy-html', () => Sparky.src('*.html', { base: './src/client/views' }).dest(`dist/`));
 
 Sparky.task('set-production-env', () => production = true);
 
