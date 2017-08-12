@@ -7,7 +7,7 @@ import * as express from 'express';
 import * as path from 'path';
 import { FuseBoxOptions } from 'fuse-box/dist/typings/core/FuseBox';
 
-let production = true;
+let production = false;
 let options: any;
 
 Sparky.task('options', () => {
@@ -83,17 +83,21 @@ Sparky.task('build', () => {
 });
 
 // main task
-Sparky.task('default', ['clean', 'options', 'build', 'copy-html'], () => {
+Sparky.task('default', ['clean', 'options', 'build', 'copy-html', 'copy-assets'], () => {
   //
 });
 
 // wipe it all
 Sparky.task('clean', () => Sparky.src('dist/*').clean('dist/'));
 
+Sparky.task('copy-assets', () => {
+  return Sparky.src('./assets/**', { base: './src' }).dest(`dist/`);
+});
+
 Sparky.task('copy-html', () => Sparky.src('*.html', { base: './src/client/views' }).dest(`dist/`));
 
 Sparky.task('set-production-env', () => production = true);
 
-Sparky.task('dist', ['clean', 'set-production-env', 'build'], () => {
+Sparky.task('dist', ['clean', 'set-production-env', 'build', 'copy-html', 'copy-assets'], () => {
   //
 });
