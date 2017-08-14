@@ -1,6 +1,7 @@
 import * as React from 'react';
 import LazyComponent from './LazyComponent';
 import MenuComponent from './MenuComponent';
+import OtherComponent from './OtherComponent';
 import {
   BrowserRouter as Router,
   Route,
@@ -22,8 +23,9 @@ export default class ApplicationComponent extends React.Component<any, any> {
           <MenuComponent />
           <div className="jumbotron">
             <Switch>
-              <Route exact path="/" render={() => <LazyComponent bundle="home" />} />
-              <Route path="/:component" render={route => <LazyComponent bundle={route.match.params.component} />} />
+              <Route exact={true} path="/" render={() => <LazyComponent bundle="home" />} />
+              <Route path="/others" component={OtherComponent} />
+              <Route path="/:component" render={(route) => <LazyComponent bundle={route.match.params.component} />} />
             </Switch>
           </div>
         </div>

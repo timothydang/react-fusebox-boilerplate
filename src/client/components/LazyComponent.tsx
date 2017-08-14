@@ -26,6 +26,7 @@ export default class LazyComponent extends React.Component<any, any> {
         <MyComponent />
       );
     }
+    return null;
   }
 
   public async lazyLoad(name: any) {

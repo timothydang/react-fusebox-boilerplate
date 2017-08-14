@@ -26,6 +26,10 @@
     "jsx-alignment": [
       false
     ],
-    "jsx-wrap-multiline": true
+    "jsx-wrap-multiline": true,
+    "jsx-no-lambda": false,
+    "max-line-length": [
+      false
+    ]
   }
 }
